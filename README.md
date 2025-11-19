@@ -43,7 +43,6 @@ Initialiser le projet et configurer Allure pour générer des rapports HTML de t
 #### 1.1 clone le projet et creation de votre branche :
 
 ```bash
-git clone 
 git checkout -b <votre_nom_prenom>
 ```
 
@@ -127,7 +126,9 @@ root_dir = Path(__file__).parent
 sys.path.insert(0, str(root_dir))
 ```
 
-#### 1.5 Créer l'application et les tests
+#### 1.5 Application et les tests
+
+Les fichiers suivants sont déja presents dans le projet :
 
 **`src/calculator.py` :**
 
@@ -139,7 +140,7 @@ sys.path.insert(0, str(root_dir))
 
 **`tests/test_calculator_stress.py` :**
 
-**Note importante :** Ces fichiers de tests créent intentionnellement des tests qui échouent pour démontrer :
+** Les fichiers de tests créent intentionnellement des tests qui échouent pour démontrer :
 - Les rapports Allure avec échecs
 - Les métriques Prometheus avec différents statuts
 - Les dashboards Grafana avec des tendances variées
@@ -199,13 +200,6 @@ allure generate reports --clean -o allure-report
 # Ouvrir le rapport
 allure open allure-report
 ```
-
-**Note pédagogique :**
-- Certains tests échouent **intentionnellement** pour démontrer :
-  - Comment Allure affiche les échecs dans les rapports
-  - Comment Prometheus capture les métriques d'échec
-  - Comment les dashboards Grafana montrent les tendances d'échec
-- Ces tests peuvent être corrigés plus tard si vous le souhaitez, mais ils sont utiles pour voir des dashboards réalistes avec des données variées.
 
 ### 🧪 Résultat attendu
 
@@ -586,7 +580,7 @@ for ($i = 1; $i -le 10; $i++) {
 
 ---
 
-## Étape 5 – Intégration CI/CD avec GitHub Actions
+## Étape 4 – Intégration CI/CD avec GitHub Actions
 
 ### 🎯 Objectif
 Automatiser la génération de rapports Allure dans le pipeline CI/CD et publier les résultats automatiquement.
@@ -612,7 +606,7 @@ Ajoutez l'en-tête du workflow :
 - `on:` : quand le workflow doit s'exécuter (push, pull_request, schedule)
 
 **Indices :**
-- Le workflow doit s'exécuter sur les branches `main` et `develop` lors d'un `push`
+- Le workflow doit s'exécuter sur les branches `main` et `develop` ou `nom_de_votre_branche`  lors d'un `push`
 - Il doit aussi s'exécuter sur les `pull_request` vers `main`
 - (Optionnel) Ajoutez un déclencheur `schedule` pour une exécution périodique (toutes les 6 heures par exemple)
 
