@@ -1,0 +1,75 @@
+name: CI - Tests avec Allure et Monitoring
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  test-and-report:
+    name: Tests + Allure Report
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 5.3 - Étape 1 : Checkout du code
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # 5.3 - Étape 2 : Setup Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      # 5.3 - Étape 3 : Installation des dépendances Python
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      # 5.3 - Étape 4 : Installer Node.js et Allure CLI
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install Allure CLI
+        run: |
+          npm install -g allure-commandline
+          allure --version
+      
+      # 5.4 - Étape 5 : Exécuter les tests avec collecte Allure
+      - name: Run tests with Allure
+        run: pytest tests/ -v --alluredir=reports
+        continue-on-error: true
+      
+      # 5.5 - Étape 6 : Générer le rapport HTML Allure
+      - name: Generate Allure report
+        if: always()
+        run: allure generate reports --clean -o allure-report
+      
+      # 5.6 - Étape 7a : Upload des résultats Allure (JSON)
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: reports/
+          retention-days: 30
+      
+      # 5.6 - Étape 7b : Upload du rapport HTML Allure
+      - name: Upload Allure HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-html-report
+          path: allure-report/
+          retention-days: 30
